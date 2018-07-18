@@ -1,0 +1,7 @@
+{
+  "automock": false,
+  "browser": false,
+  "bail": true,
+  "testEnvironment": "node",
+  "testMatch": ["src/**/*.spec.js"]
+}
