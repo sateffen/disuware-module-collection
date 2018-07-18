@@ -15,11 +15,25 @@ else {
 const configFileContent = fs.readFileSync(configFilePath).toString();
 const configFileData = JSON.parse(configFileContent);
 
+/**
+ * Tests whether given key is existent in the config
+ * @param {string} aKey
+ * @return {Promise<any>}
+ */
+function hasKey(aKey) {
+    return configFileData[aKey] === undefined ? Promise.reject() : Promise.resolve();
+}
+
+/**
+ * Retrieves the data from given key
+ * @param {string} aKey
+ * @return {Promise<any>}
+ */
+function getKey(aKey) {
+    return Promise.resolve(configFileData[aKey]);
+}
+
 module.exports = {
-    hasKey(aKey) {
-        return configFileData[aKey] === undefined ? Promise.reject() : Promise.resolve();
-    },
-    getKey(aKey) {
-        return Promise.resolve(configFileData[aKey]);
-    },
+    hasKey,
+    getKey,
 };
