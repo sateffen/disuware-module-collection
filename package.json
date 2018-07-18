@@ -1,0 +1,18 @@
+{
+  "name": "disuware-module-collection",
+  "version": "0.0.0",
+  "description": "Disuware module collection",
+  "private": true,
+  "workspaces": [
+    "./src/*"
+  ],
+  "scripts": {
+    "lint": "eslint -c .eslintrc src",
+    "test": "jest --config=jest.json"
+  },
+  "devDependencies": {
+    "eslint": "~5.1.0",
+    "eslint-config-google": "~0.9.1",
+    "jest": "~23.4.1"
+  }
+}
