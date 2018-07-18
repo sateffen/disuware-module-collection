@@ -1,0 +1,11 @@
+{
+  "name": "graphqlprovider",
+  "version": "1.0.0",
+  "private": true,
+  "main": "lib.js",
+  "dependencies": {
+    "apollo-server-core": "~1.4.0",
+    "graphql": "~0.13.2",
+    "graphql-tools": "~3.0.5"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "interface": "configprovider",
+  "version": "0.0.0",
+  "requires": {}
+}

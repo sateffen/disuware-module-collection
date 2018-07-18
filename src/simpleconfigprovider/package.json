@@ -1,0 +1,10 @@
+{
+  "name": "simpleconfigprovider",
+  "version": "0.0.0",
+  "description": "A simple config provider",
+  "main": "lib.js",
+  "private": true,
+  "dependencies": {
+    "minimist": "~1.2.0"
+  }
+}
