@@ -1,4 +1,3 @@
-const http = require('http');
 const polka = require('polka');
 
 const httpConfigSchema = require('./configschema.json');
@@ -42,7 +41,8 @@ function __disuwareInit(aInitCompletedPromise) {
     }
 
     if (typeof config.http === 'object') {
-        const httpServer = http.createServer(router.handler.bind(router));
+        const httpModule = require('http');
+        const httpServer = httpModule.createServer(router.handler.bind(router));
 
         aInitCompletedPromise.then(() => httpServer.listen(config.http.port, config.http.host));
         httpServerList.push(httpServer);
@@ -90,16 +90,11 @@ module.exports = {
     __disuwareInit,
     onWebSocket: registerForWebSockets,
     addMiddleware: router.use.bind(router),
+    onGet: router.get.bind(router),
+    onPost: router.post.bind(router),
+    onPut: router.put.bind(router),
+    onDelete: router.delete.bind(router),
+    onPatch: router.patch.bind(router),
+    onOptions: router.options.bind(router),
+    onHead: router.head.bind(router),
 };
-
-http.METHODS.forEach((aMethod) => {
-    const lowerCasedMethod = aMethod.toLowerCase();
-
-    if (typeof router[lowerCasedMethod] === 'function') {
-        const newName = `on${aMethod[0]}${lowerCasedMethod.slice(1)}`;
-
-        if (typeof module.exports[newName] !== 'function') {
-            module.exports[newName] = router[lowerCasedMethod].bind(router);
-        }
-    }
-});
