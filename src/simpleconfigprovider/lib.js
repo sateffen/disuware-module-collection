@@ -18,10 +18,10 @@ const configFileData = JSON.parse(configFileContent);
 /**
  * Tests whether given key is existent in the config
  * @param {string} aKey
- * @return {Promise<any>}
+ * @return {Promise<boolean>}
  */
 function hasKey(aKey) {
-    return configFileData[aKey] === undefined ? Promise.reject() : Promise.resolve();
+    return Promise.resolve(configFileData[aKey] !== undefined);
 }
 
 /**
