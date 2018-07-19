@@ -33,7 +33,7 @@ function registerForWebSockets(aHandler) {
  * @private
  */
 function __disuwareInit(aInitCompletedPromise) {
-    const config = configProvider.getKey('httpserver');
+    const config = configProvider.getKey('polkahttpprovider');
     const valid = ajv.validate(httpConfigSchema, config);
 
     if (!valid) {
