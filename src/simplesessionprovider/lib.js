@@ -23,10 +23,10 @@ function createSession() {
 /**
  * Checks whether a session with given sessionkey exists
  * @param {string} aSessionKey
- * @return {Promise<string>}
+ * @return {Promise<boolean>} A promise resolving with the result, whether the sessionstore contains this session
  */
 function hasSession(aSessionKey) {
-    return sessionStore.has(aSessionKey) ? Promise.resolve() : Promise.reject();
+    return Promise.resolve(sessionStore.has(aSessionKey));
 }
 
 /**
@@ -63,14 +63,14 @@ function setRights(aSessionKey, aRights) {
         return Promise.resolve();
     }
 
-    return Promise.reject();
+    return Promise.reject(new Error('disuware!sessionprovider setRights: Session does not exist'));
 }
 
 /**
  * Checks if the session with given key has all rights, and returns a promise based on the result
  * @param {string} aSessionKey
  * @param {string|string[]} aRights
- * @return {Promise<never>}
+ * @return {Promise<boolean>} A promise telling whether the user has needed rights or not
  */
 function hasRights(aSessionKey, aRights) {
     if (!_.isString(aSessionKey)) {
@@ -83,9 +83,22 @@ function hasRights(aSessionKey, aRights) {
         return Promise.reject(new TypeError('disuware!sessionprovider hasRight: Second parameter has to be a string or an array of strings'));
     }
 
-    //TODO: Complete
+    if (sessionStore.has(aSessionKey)) {
+        const session = sessionStore.get(aSessionKey);
+        const sessionHasRights = _.every(rights, (aRight) => session.shiroModel.check(aRight));
+
+        return Promise.resolve(sessionHasRights);
+    }
+
+    return Promise.reject(new Error('disuware!sessionprovider hasRight: Session does not exist'));
 }
 
+/**
+ * Retrieves the data stored for sessionkey. If a dataPath is given, only the subpath is returned
+ * @param {string} aSessionKey
+ * @param {string} [aDataPath]
+ * @return {Promise<any>}
+ */
 function getData(aSessionKey, aDataPath) {
     if (!_.isString(aSessionKey)) {
         return Promise.reject(new TypeError('disuware!sessionprovider getData: First parameter has to be of type string'));
@@ -101,9 +114,16 @@ function getData(aSessionKey, aDataPath) {
         return Promise.resolve(requestedData);
     }
 
-    return Promise.reject();
+    return Promise.reject(new Error('disuware!sessionprovider getData: Session does not exist'));
 }
 
+/**
+ * Updates the stored sessiondata with given sessiondata. The data is merged, so if you provide only a subset of data, nothing else is
+ * overwritten
+ * @param {string} aSessionKey
+ * @param {Object} aSessionData
+ * @return {Promise<void>}
+ */
 function updateData(aSessionKey, aSessionData) {
     if (!_.isString(aSessionKey)) {
         return Promise.reject(new TypeError('disuware!sessionprovider updateData: First parameter has to be of type string'));
@@ -121,9 +141,15 @@ function updateData(aSessionKey, aSessionData) {
         return Promise.resolve();
     }
 
-    return Promise.reject();
+    return Promise.reject(new Error('disuware!sessionprovider updateData: Session does not exist'));
 }
 
+/**
+ * Overwrites the data stored for the given sessionkey. This replaces all data currently stored!
+ * @param {string} aSessionKey
+ * @param {Object} aSessionData
+ * @return {Promise<void>}
+ */
 function overwriteData(aSessionKey, aSessionData) {
     if (!_.isString(aSessionKey)) {
         return Promise.reject(new TypeError('disuware!sessionprovider overwriteData: First parameter has to be of type string'));
@@ -141,7 +167,7 @@ function overwriteData(aSessionKey, aSessionData) {
         return Promise.resolve();
     }
 
-    return Promise.reject();
+    return Promise.reject(new Error('disuware!sessionprovider overwriteData: Session does not exist'));
 }
 
 module.exports = {
