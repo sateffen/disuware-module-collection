@@ -2,18 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const minimist = require('minimist');
 
-const parsedArguments = minimist(process.argv.slice(2));
-let configFilePath;
-
-if (typeof parsedArguments['simpleconfigprovider-file'] === 'string') {
-    configFilePath = path.resolve(process.cwd(), parsedArguments['simpleconfigprovider-file']);
-}
-else {
-    configFilePath = path.join(process.cwd(), './config.json');
-}
-
-const configFileContent = fs.readFileSync(configFilePath).toString();
-const configFileData = JSON.parse(configFileContent);
+let configFileData = null;
 
 /**
  * Tests whether given key is existent in the config
@@ -33,7 +22,27 @@ function getKey(aKey) {
     return Promise.resolve(configFileData[aKey]);
 }
 
+/**
+ * Initializes this module by reading the config and writing it to the configFileData pointer
+ */
+function __disuwareInit() {
+    const parsedArguments = minimist(process.argv.slice(2));
+    let configFilePath;
+
+    if (typeof parsedArguments['simpleconfigprovider-file'] === 'string') {
+        configFilePath = path.resolve(process.cwd(), parsedArguments['simpleconfigprovider-file']);
+    }
+    else {
+        configFilePath = path.join(process.cwd(), './config.json');
+    }
+
+    const configFileContent = fs.readFileSync(configFilePath).toString();
+
+    configFileData = JSON.parse(configFileContent);
+}
+
 module.exports = {
+    __disuwareInit,
     hasKey,
     getKey,
 };
