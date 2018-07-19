@@ -3,5 +3,6 @@
   "browser": false,
   "bail": true,
   "testEnvironment": "node",
-  "testMatch": ["src/**/*.spec.js"]
+  "testMatch": ["**/*.test.js"],
+  "projects": ["src/*"]
 }
