@@ -1,7 +1,10 @@
 {
   "automock": false,
   "browser": false,
-  "bail": true,
+  "bail": false,
+  "collectCoverage": true,
+  "coverageReporters": ["text"],
+  "errorOnDeprecated": true,
   "testEnvironment": "node",
   "testMatch": ["**/*.test.js"],
   "projects": ["src/*"]
