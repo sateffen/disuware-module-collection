@@ -10,11 +10,7 @@ let cacheMap = null;
  * @return {Promise<any>}
  */
 function getValue(aKey) {
-    if (cacheMap.has(aKey)) {
-        return Promise.resolve(cacheMap.get(aKey));
-    }
-
-    return Promise.reject();
+    return Promise.resolve(cacheMap.get(aKey));
 }
 
 /**
