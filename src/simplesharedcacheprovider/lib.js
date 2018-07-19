@@ -32,10 +32,10 @@ function setValue(aKey, aValue) {
 /**
  * Checks whether given key is present in the cache. The returned promise will resolve or reject depending of the existence
  * @param {string} aKey
- * @return {Promise<void>}
+ * @return {Promise<boolean>}
  */
 function hasValue(aKey) {
-    return cacheMap.has(aKey) ? Promise.reject() : Promise.resolve();
+    return Promise.resolve(cacheMap.has(aKey));
 }
 
 /**
