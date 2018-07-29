@@ -27,6 +27,15 @@ function registerForWebSockets(aHandler) {
 }
 
 /**
+ * Sets given property to given value
+ * @param {string} aPropertyName The property to set
+ * @param {any} aValue The value to set
+ */
+function setPropertyOfRouter(aPropertyName, aValue) {
+    router[aPropertyName] = aValue;
+}
+
+/**
  * Initializes the httpserver
  * @param {Promise} aInitCompletedPromise
  * @return {Promise<void>} An empty promise to finish the chain
@@ -88,7 +97,9 @@ function __disuwareInit(aInitCompletedPromise) {
 
 module.exports = {
     __disuwareInit,
+
     onWebSocket: registerForWebSockets,
+
     addMiddleware: router.use.bind(router),
     onGet: router.get.bind(router),
     onPost: router.post.bind(router),
@@ -97,4 +108,7 @@ module.exports = {
     onPatch: router.patch.bind(router),
     onOptions: router.options.bind(router),
     onHead: router.head.bind(router),
+
+    onUnknownRoute: setPropertyOfRouter.bind(null, router, 'onNoMatch'),
+    onHttpError: setPropertyOfRouter.bind(null, router, 'onError'),
 };
