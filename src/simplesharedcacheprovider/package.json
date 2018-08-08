@@ -3,5 +3,9 @@
   "version": "0.0.0",
   "description": "A simple shared cache provider",
   "main": "lib.js",
-  "private": true
+  "private": true,
+  "jest": {
+    "displayName": "simplesharedcacheprovider",
+    "testEnvironment": "node"
+  }
 }
