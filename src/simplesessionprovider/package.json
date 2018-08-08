@@ -4,6 +4,10 @@
   "description": "A simple session provider",
   "main": "lib.js",
   "private": true,
+  "jest": {
+    "displayName": "simplesharedcacheprovider",
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "lodash": "~4.17.10",
     "shiro-trie": "~0.4.7",

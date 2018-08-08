@@ -2,7 +2,11 @@ const uuid = require('uuid/v4');
 const shiroTrie = require('shiro-trie');
 const _ = require('lodash');
 
-const sessionStore = new Map();
+/**
+ * The session store
+ * @type {Map<string, Object>}
+ */
+let sessionStore = null;
 
 /**
  * Creates a new session and returns the session key
@@ -170,7 +174,20 @@ function overwriteData(aSessionKey, aSessionData) {
     return Promise.reject(new Error('disuware!sessionprovider overwriteData: Session does not exist'));
 }
 
+/**
+ * Initializes this module
+ * @return {Promise<void>}
+ * @private
+ */
+function __disuwareInit() {
+    sessionStore = new Map();
+
+    return Promise.resolve();
+}
+
 module.exports = {
+    __disuwareInit,
+
     createSession,
     hasSession,
     deleteSession,
