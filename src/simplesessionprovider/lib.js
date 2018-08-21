@@ -30,6 +30,10 @@ function createSession() {
  * @return {Promise<boolean>} A promise resolving with the result, whether the sessionstore contains this session
  */
 function hasSession(aSessionKey) {
+    if (!_.isString(aSessionKey)) {
+        return Promise.reject(new TypeError('disuware!sessionprovider hasSession: First parameter has to be of type string'));
+    }
+
     return Promise.resolve(sessionStore.has(aSessionKey));
 }
 
@@ -39,6 +43,10 @@ function hasSession(aSessionKey) {
  * @return {Promise<void>}
  */
 function deleteSession(aSessionKey) {
+    if (!_.isString(aSessionKey)) {
+        return Promise.reject(new TypeError('disuware!sessionprovider deleteSession: First parameter has to be of type string'));
+    }
+
     sessionStore.delete(aSessionKey);
 
     return Promise.resolve();
@@ -83,7 +91,7 @@ function hasRights(aSessionKey, aRights) {
 
     const rights = _.isString(aRights) ? [aRights] : aRights;
 
-    if (!_.every(rights, _.isString)) {
+    if (!Array.isArray(aRights) || !_.every(rights, _.isString)) {
         return Promise.reject(new TypeError('disuware!sessionprovider hasRight: Second parameter has to be a string or an array of strings'));
     }
 
