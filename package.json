@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "lint": "eslint -c .eslintrc src",
-    "test": "jest --config=jest.json"
+    "test": "jest --config=jest.json",
+    "test:watch": "jest --config=jest.json --watch"
   },
   "devDependencies": {
     "eslint": "~5.3.0",
