@@ -5,7 +5,7 @@
   "main": "lib.js",
   "private": true,
   "jest": {
-    "displayName": "simplesharedcacheprovider",
+    "displayName": "simplesessionprovider",
     "testEnvironment": "node"
   },
   "dependencies": {
