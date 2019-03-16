@@ -6,7 +6,7 @@ const _ = require('lodash');
  * The session store
  * @type {Map<string, Object>}
  */
-let sessionStore = null;
+const sessionStore = new Map();
 
 /**
  * Creates a new session and returns the session key
@@ -188,7 +188,7 @@ function overwriteData(aSessionKey, aSessionData) {
  * @private
  */
 function __disuwareInit() {
-    sessionStore = new Map();
+    sessionStore.clear();
 
     return Promise.resolve();
 }

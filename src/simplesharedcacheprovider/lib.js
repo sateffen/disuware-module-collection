@@ -2,7 +2,7 @@
  * A map holding given data as cache
  * @type {Map<string, any>}
  */
-let cacheMap = null;
+const cacheMap = new Map();
 
 /**
  * Gets given key from the cache
@@ -51,7 +51,7 @@ function deleteValue(aKey) {
  * @return {Promise<void>}
  */
 function __disuwareInit() {
-    cacheMap = new Map();
+    cacheMap.clear();
 
     return Promise.resolve();
 }
