@@ -5,5 +5,5 @@
   "errorOnDeprecated": true,
   "testEnvironment": "node",
   "testMatch": ["**/*.test.js"],
-  "projects": ["src/*"]
+  "projects": ["pkg/*"]
 }

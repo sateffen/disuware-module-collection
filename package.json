@@ -4,10 +4,10 @@
   "description": "Disuware module collection",
   "private": true,
   "workspaces": [
-    "./src/*"
+    "./pkg/*"
   ],
   "scripts": {
-    "lint": "eslint -c .eslintrc src",
+    "lint": "eslint -c .eslintrc pkg",
     "test": "jest --config=jest.json",
     "test:watch": "jest --config=jest.json --watch"
   },
