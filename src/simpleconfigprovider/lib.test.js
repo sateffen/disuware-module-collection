@@ -24,8 +24,8 @@ describe('Simple configprovider', () => {
         test('The init function should return a promise that resolves', () => {
             minimist.mockReturnValueOnce({});
             fs.readFileSync.mockReturnValueOnce('{}');
-            return configProvider.__disuwareInit()
-                .then(() => expect(true).toBe(true));
+
+            return configProvider.__disuwareInit();
         });
 
         test('The init function should resolve to the default config-file', () => {

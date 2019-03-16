@@ -12,16 +12,8 @@ describe('Simple sessionprovider', () => {
             expect(returnValueOfInit instanceof Promise).toBeTruthy();
         });
 
-        test('The init function should return a promise that resolves', (done) => {
-            sessionProvider.__disuwareInit()
-                .then(() => {
-                    expect(true).toBe(true);
-                    done();
-                })
-                .catch(() => {
-                    expect('this').toBe('not happening');
-                    done();
-                });
+        test('The init function should return a promise that resolves', () => {
+            return sessionProvider.__disuwareInit()
         });
     });
 

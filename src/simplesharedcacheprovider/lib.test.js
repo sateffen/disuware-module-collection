@@ -8,16 +8,8 @@ describe('Simple sharedcacheprovider', () => {
             expect(returnValueOfInit instanceof Promise).toBeTruthy();
         });
 
-        test('The init function should return a promise that resolves', (done) => {
-            sharedCacheProvider.__disuwareInit()
-                .then(() => {
-                    expect(true).toBe(true);
-                    done();
-                })
-                .catch(() => {
-                    expect('this').toBe('not happening');
-                    done();
-                });
+        test('The init function should return a promise that resolves', () => {
+            return sharedCacheProvider.__disuwareInit();
         });
     });
 
