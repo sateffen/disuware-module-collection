@@ -13,7 +13,7 @@ describe('Simple sessionprovider', () => {
         });
 
         test('The init function should return a promise that resolves', () => {
-            return sessionProvider.__disuwareInit()
+            return sessionProvider.__disuwareInit();
         });
     });
 
