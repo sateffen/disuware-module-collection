@@ -2,7 +2,8 @@ const uuid = require('uuid/v4');
 const sessionProvider = require('./lib');
 const _ = require('lodash');
 
-const NON_STRING_VALUES = [0, 1, 3.14, -3, false, true, null, () => { }, {}, []];
+const NON_STRING_VALUES = [0, 1, 3.14, -3, false, true, null, () => {}, {}, []];
+const NON_OBJECT_VALUES = [0, 1, 3.14, -3, false, true, null, () => {}, 'string', []];
 
 describe('Simple sessionprovider', () => {
     describe('__disuwareInit', () => {
@@ -165,8 +166,8 @@ describe('Simple sessionprovider', () => {
         });
 
         test('setRights should fail, if the session to extend with rights does not exist', () => {
-            const sessionKey = uuid();
-            const returnValue = sessionProvider.setRights(sessionKey, ['test']);
+            const localSessionKey = uuid();
+            const returnValue = sessionProvider.setRights(localSessionKey, ['test']);
 
             return expect(returnValue).rejects.toBeInstanceOf(Error);
         });
@@ -242,6 +243,206 @@ describe('Simple sessionprovider', () => {
                 .then(() => sessionProvider.hasRights(sessionKey, ['test', 'other']));
 
             return expect(promiseChain).resolves.toBe(true);
+        });
+    });
+
+    describe('getData', () => {
+        let sessionKey = null;
+
+        beforeEach(() =>
+            sessionProvider.__disuwareInit()
+                .then(() => sessionProvider.createSession())
+                .then((aSessionKey) => {
+                    sessionKey = aSessionKey;
+                })
+        );
+
+        test('getData should not throw an error', () => {
+            const testFunction = () => sessionProvider.getData(sessionKey, 'test');
+
+            expect(testFunction).not.toThrow();
+        });
+
+        test('getData should not throw an error when the second parameter is missing', () => {
+            const testFunction = () => sessionProvider.getData(sessionKey);
+
+            expect(testFunction).not.toThrow();
+        });
+
+        test('getData should return a promise', () => {
+            const returnValue = sessionProvider.getData(sessionKey, 'test');
+
+            expect(returnValue).toBeInstanceOf(Promise);
+        });
+
+        _.forEach(NON_STRING_VALUES, (aNonStringSessionKey) => {
+            test(`getData should return a rejecting promise calling it with sessionKey of type "${toString.call(aNonStringSessionKey)}"`, () => {
+                const returnValue = sessionProvider.getData(aNonStringSessionKey, 'test');
+
+                return expect(returnValue).rejects.toBeInstanceOf(TypeError);
+            });
+
+            test(`getData should return a rejecting promise calling it with a dataPath of type "${toString.call(aNonStringSessionKey)}"`, () => {
+                const returnValue = sessionProvider.getData(sessionKey, aNonStringSessionKey);
+
+                return expect(returnValue).rejects.toBeInstanceOf(TypeError);
+            });
+        });
+
+        test('getData should fail, if the session to get data from does not exist', () => {
+            const localSessionKey = uuid();
+            const returnValue = sessionProvider.getData(localSessionKey, 'test');
+
+            return expect(returnValue).rejects.toBeInstanceOf(Error);
+        });
+
+        test('getData should return an empty object when the session is valid, but no data is set', () => {
+            const returnValue = sessionProvider.getData(sessionKey);
+
+            expect(returnValue).resolves.toEqual(expect.any(Object));
+        });
+
+        test('getData should return a frozen object', () => {
+            return sessionProvider.getData(sessionKey)
+                .then((aData) => expect(Object.isFrozen(aData)).toBe(true));
+        });
+    });
+
+    describe('updateData', () => {
+        let sessionKey = null;
+
+        beforeEach(() =>
+            sessionProvider.__disuwareInit()
+                .then(() => sessionProvider.createSession())
+                .then((aSessionKey) => {
+                    sessionKey = aSessionKey;
+                })
+        );
+
+        test('updateData should not throw an error', () => {
+            const testFunction = () => sessionProvider.updateData(sessionKey, {test: true});
+
+            expect(testFunction).not.toThrow();
+        });
+
+        test('updateData should return a promise', () => {
+            const returnValue = sessionProvider.updateData(sessionKey, {test: true});
+
+            expect(returnValue).toBeInstanceOf(Promise);
+        });
+
+        _.forEach(NON_STRING_VALUES, (aNonStringSessionKey) => {
+            test(`updateData should return a rejecting promise calling it with sessionKey of type "${toString.call(aNonStringSessionKey)}"`, () => {
+                const returnValue = sessionProvider.updateData(aNonStringSessionKey, {test: true});
+
+                return expect(returnValue).rejects.toBeInstanceOf(TypeError);
+            });
+        });
+
+        _.forEach(NON_OBJECT_VALUES, (aNonObjectData) => {
+            test(`updateData should return a rejecting promise calling it with data of type "${toString.call(aNonObjectData)}"`, () => {
+                const returnValue = sessionProvider.updateData(sessionKey, aNonObjectData);
+
+                return expect(returnValue).rejects.toBeInstanceOf(TypeError);
+            });
+        });
+
+        test('updateData should fail, if the session to get data from does not exist', () => {
+            const localSessionKey = uuid();
+            const returnValue = sessionProvider.updateData(localSessionKey, {test: true});
+
+            return expect(returnValue).rejects.toBeInstanceOf(Error);
+        });
+
+        test('updateData should merge given data in the session data', () => {
+            const dataToWrite = {test: Math.random()};
+            const promiseChain = Promise.resolve()
+                .then(() => sessionProvider.updateData(sessionKey, dataToWrite))
+                .then(() => sessionProvider.getData(sessionKey));
+
+            return expect(promiseChain).resolves.toEqual(dataToWrite);
+        });
+
+        test('updateData should create a newly merged object when writing data', () => {
+            const dataToWrite = {test: Math.random()};
+            const promiseChain = Promise.resolve()
+                .then(() => sessionProvider.updateData(sessionKey, dataToWrite))
+                .then(() => sessionProvider.getData(sessionKey));
+
+            return expect(promiseChain).resolves.not.toBe(dataToWrite);
+        });
+
+        test('updateData should merge multiple calls to one object when writing data', () => {
+            const data1ToWrite = {test1: Math.random()};
+            const data2ToWrite = {test2: Math.random()};
+            const writtenResult = {
+                test1: data1ToWrite.test1,
+                test2: data1ToWrite.test2,
+            };
+            const promiseChain = Promise.resolve()
+                .then(() => sessionProvider.updateData(sessionKey, data1ToWrite))
+                .then(() => sessionProvider.updateData(sessionKey, data2ToWrite))
+                .then(() => sessionProvider.getData(sessionKey));
+
+            return expect(promiseChain).resolves.not.toBe(writtenResult);
+        });
+    });
+
+    describe('overwriteData', () => {
+        let sessionKey = null;
+
+        beforeEach(() =>
+            sessionProvider.__disuwareInit()
+                .then(() => sessionProvider.createSession())
+                .then((aSessionKey) => {
+                    sessionKey = aSessionKey;
+                })
+        );
+
+        test('overwriteData should not throw an error', () => {
+            const testFunction = () => sessionProvider.overwriteData(sessionKey, {test: true});
+
+            expect(testFunction).not.toThrow();
+        });
+
+        test('overwriteData should return a promise', () => {
+            const returnValue = sessionProvider.overwriteData(sessionKey, {test: true});
+
+            expect(returnValue).toBeInstanceOf(Promise);
+        });
+
+        _.forEach(NON_STRING_VALUES, (aNonStringSessionKey) => {
+            test(`overwriteData should return a rejecting promise calling it with sessionKey of type "${toString.call(aNonStringSessionKey)}"`, () => {
+                const returnValue = sessionProvider.overwriteData(aNonStringSessionKey, {test: true});
+
+                return expect(returnValue).rejects.toBeInstanceOf(TypeError);
+            });
+        });
+
+        _.forEach(NON_OBJECT_VALUES, (aNonObjectData) => {
+            test(`overwriteData should return a rejecting promise calling it with data of type "${toString.call(aNonObjectData)}"`, () => {
+                const returnValue = sessionProvider.overwriteData(sessionKey, aNonObjectData);
+
+                return expect(returnValue).rejects.toBeInstanceOf(TypeError);
+            });
+        });
+
+        test('overwriteData should fail, if the session to get data from does not exist', () => {
+            const localSessionKey = uuid();
+            const returnValue = sessionProvider.overwriteData(localSessionKey, {test: true});
+
+            return expect(returnValue).rejects.toBeInstanceOf(Error);
+        });
+
+        test('overwriteData should overwrite the existing data for a session', () => {
+            const dataToUpdate = {other: Math.random()};
+            const dataToWrite = {test: Math.random()};
+            const promiseChain = Promise.resolve()
+                .then(() => sessionProvider.updateData(sessionKey, dataToUpdate))
+                .then(() => sessionProvider.overwriteData(sessionKey, dataToWrite))
+                .then(() => sessionProvider.getData(sessionKey));
+
+            return expect(promiseChain).resolves.toBe(dataToWrite);
         });
     });
 });

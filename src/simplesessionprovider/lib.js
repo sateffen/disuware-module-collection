@@ -16,7 +16,7 @@ function createSession() {
     const sessionId = uuid();
     const sessionModel = {
         shiroModel: shiroTrie.newTrie(),
-        data: {},
+        data: Object.freeze({}),
     };
 
     sessionStore.set(sessionId, sessionModel);
@@ -115,7 +115,7 @@ function getData(aSessionKey, aDataPath) {
     if (!_.isString(aSessionKey)) {
         return Promise.reject(new TypeError('disuware!sessionprovider getData: First parameter has to be of type string'));
     }
-    else if (!_.isUndefined(aDataPath) || !_.isString(aDataPath)) {
+    else if (!_.isUndefined(aDataPath) && !_.isString(aDataPath)) {
         return Promise.reject(new TypeError('disuware!sessionprovider getData: Second parameter has to be of type string or undefined'));
     }
 
@@ -140,7 +140,7 @@ function updateData(aSessionKey, aSessionData) {
     if (!_.isString(aSessionKey)) {
         return Promise.reject(new TypeError('disuware!sessionprovider updateData: First parameter has to be of type string'));
     }
-    else if (!_.isObject(aSessionData)) {
+    else if (!_.isPlainObject(aSessionData)) {
         return Promise.reject(new TypeError('disuware!sessionprovider updateData: Second parameter has to be an object'));
     }
 
@@ -166,7 +166,7 @@ function overwriteData(aSessionKey, aSessionData) {
     if (!_.isString(aSessionKey)) {
         return Promise.reject(new TypeError('disuware!sessionprovider overwriteData: First parameter has to be of type string'));
     }
-    else if (!_.isObject(aSessionData)) {
+    else if (!_.isPlainObject(aSessionData)) {
         return Promise.reject(new TypeError('disuware!sessionprovider overwriteData: Second parameter has to be an object'));
     }
 
