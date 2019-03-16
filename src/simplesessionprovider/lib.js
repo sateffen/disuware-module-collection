@@ -91,7 +91,7 @@ function hasRights(aSessionKey, aRights) {
 
     const rights = _.isString(aRights) ? [aRights] : aRights;
 
-    if (!Array.isArray(aRights) || !_.every(rights, _.isString)) {
+    if (!Array.isArray(rights) || !_.every(rights, _.isString)) {
         return Promise.reject(new TypeError('disuware!sessionprovider hasRight: Second parameter has to be a string or an array of strings'));
     }
 
