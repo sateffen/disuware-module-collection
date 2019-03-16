@@ -24,21 +24,25 @@ function getKey(aKey) {
 
 /**
  * Initializes this module by reading the config and writing it to the configFileData pointer
+ * @return {Promise<void>}
  */
 function __disuwareInit() {
-    const parsedArguments = minimist(process.argv.slice(2));
-    let configFilePath;
+    return new Promise((aResolve) => {
+        const parsedArguments = minimist(process.argv.slice(2));
+        let configFilePath = '';
 
-    if (typeof parsedArguments['simpleconfigprovider-file'] === 'string') {
-        configFilePath = path.resolve(process.cwd(), parsedArguments['simpleconfigprovider-file']);
-    }
-    else {
-        configFilePath = path.join(process.cwd(), './config.json');
-    }
+        if (typeof parsedArguments['simpleconfigprovider-file'] === 'string') {
+            configFilePath = path.resolve(process.cwd(), parsedArguments['simpleconfigprovider-file']);
+        }
+        else {
+            configFilePath = path.join(process.cwd(), './config.json');
+        }
 
-    const configFileContent = fs.readFileSync(configFilePath).toString();
+        const configFileContent = fs.readFileSync(configFilePath).toString();
+        configFileData = JSON.parse(configFileContent);
 
-    configFileData = JSON.parse(configFileContent);
+        aResolve();
+    });
 }
 
 module.exports = {
