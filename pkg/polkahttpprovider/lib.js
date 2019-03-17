@@ -2,7 +2,6 @@ const polka = require('polka');
 
 const httpConfigSchema = require('./configschema.json');
 const Ajv = require('ajv');
-const ajv = new Ajv();
 
 const configProvider = require('disuware!configprovider');
 
@@ -43,6 +42,7 @@ function setPropertyOfRouter(aPropertyName, aValue) {
  */
 function __disuwareInit(aInitCompletedPromise) {
     const config = configProvider.getKey('polkahttpprovider');
+    const ajv = new Ajv();
     const valid = ajv.validate(httpConfigSchema, config);
 
     if (!valid) {
