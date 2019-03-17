@@ -109,6 +109,6 @@ module.exports = {
     onOptions: router.options.bind(router),
     onHead: router.head.bind(router),
 
-    onUnknownRoute: setPropertyOfRouter.bind(null, router, 'onNoMatch'),
-    onHttpError: setPropertyOfRouter.bind(null, router, 'onError'),
+    onUnknownRoute: setPropertyOfRouter.bind(router, 'onNoMatch'),
+    onHttpError: setPropertyOfRouter.bind(router, 'onError'),
 };
