@@ -302,7 +302,7 @@ describe('Simple sessionprovider', () => {
             expect(returnValue).resolves.toEqual(expect.any(Object));
         });
 
-        test('getData should return a frozen object', () => {
+        test('getData should return a frozen initial object', () => {
             return sessionProvider.getData(sessionKey)
                 .then((aData) => expect(Object.isFrozen(aData)).toBe(true));
         });
@@ -386,6 +386,14 @@ describe('Simple sessionprovider', () => {
 
             return expect(promiseChain).resolves.not.toBe(writtenResult);
         });
+
+        test('updateData should freeze the data before receiving it back by getData', () => {
+            const dataToWrite = {test: Math.random()};
+
+            return sessionProvider.getData(sessionKey)
+                .then(() => sessionProvider.updateData(sessionKey, dataToWrite))
+                .then((aData) => expect(Object.isFrozen(aData)).toBe(true));
+        });
     });
 
     describe('overwriteData', () => {
@@ -443,6 +451,14 @@ describe('Simple sessionprovider', () => {
                 .then(() => sessionProvider.getData(sessionKey));
 
             return expect(promiseChain).resolves.toBe(dataToWrite);
+        });
+
+        test('overwriteData should freeze the data before receiving it back by getData', () => {
+            const dataToWrite = {test: Math.random()};
+
+            return sessionProvider.getData(sessionKey)
+                .then(() => sessionProvider.overwriteData(sessionKey, dataToWrite))
+                .then((aData) => expect(Object.isFrozen(aData)).toBe(true));
         });
     });
 });
