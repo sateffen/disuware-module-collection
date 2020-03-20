@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "lodash": "~4.17.15",
-    "shiro-trie": "~0.4.8",
-    "uuid": "~3.3.3"
+    "shiro-trie": "~0.4.9",
+    "uuid": "~7.0.2"
   }
 }

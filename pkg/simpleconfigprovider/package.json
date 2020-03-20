@@ -5,6 +5,6 @@
   "main": "lib.js",
   "private": true,
   "dependencies": {
-    "minimist": "~1.2.0"
+    "minimist": "~1.2.5"
   }
 }
